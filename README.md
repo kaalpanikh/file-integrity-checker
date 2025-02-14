@@ -41,17 +41,73 @@ This project is based on the [File Integrity Checker](https://roadmap.sh/project
 ## 🏗️ Architecture
 
 ```mermaid
-graph TD
-    A[User Input] --> B[CLI Interface]
-    B --> C{Command Type}
-    C -->|Init| D[Hash Calculator]
-    C -->|Check| E[Hash Verifier]
-    C -->|Update| F[Hash Updater]
-    D --> G[Hash Storage]
+flowchart TD
+    subgraph User["User Interface"]
+        A[User Input] --> B[CLI Interface]
+        B --> C{Command Router}
+    end
+
+    subgraph Commands["Command Processing"]
+        C -->|"init"| D[Hash Calculator]
+        C -->|"check"| E[Hash Verifier]
+        C -->|"update"| F[Hash Updater]
+    end
+
+    subgraph Storage["Data Management"]
+        G[(Hash Storage)]
+        H[YAML File<br/>.file_hashes.yml]
+    end
+
+    subgraph FileOps["File Operations"]
+        I[File Reader] --> J[Binary Processing]
+        J --> K[Chunk Handler<br/>4KB blocks]
+    end
+
+    D --> I
+    E --> I
+    F --> I
+    K --> D
+    K --> E
+    K --> F
+    D --> G
     E --> G
     F --> G
-    G -->|Store/Load| H[YAML File]
+    G <--> H
+
+    style User fill:#f9f,stroke:#333,stroke-width:2px
+    style Commands fill:#bbf,stroke:#333,stroke-width:2px
+    style Storage fill:#bfb,stroke:#333,stroke-width:2px
+    style FileOps fill:#fbb,stroke:#333,stroke-width:2px
 ```
+
+Key Components:
+1. **User Interface Layer**:
+   - Handles user input through CLI
+   - Parses commands using Click framework
+   - Routes commands to appropriate handlers
+
+2. **Command Processing Layer**:
+   - Init: Creates initial file hashes
+   - Check: Verifies file integrity
+   - Update: Refreshes stored hashes
+
+3. **File Operations Layer**:
+   - Reads files in binary mode
+   - Processes in 4KB chunks
+   - Handles large files efficiently
+
+4. **Data Management Layer**:
+   - Stores hashes in YAML format
+   - Manages hash retrieval
+   - Ensures data persistence
+
+Data Flow:
+1. User enters command through CLI
+2. Command router directs to appropriate handler
+3. File operations read and process files
+4. Hash calculations performed on file chunks
+5. Results stored in or compared with YAML storage
+6. Status reported back to user
 
 ## 📋 Prerequisites
 
