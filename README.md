@@ -194,7 +194,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👤 Author
 
-Nikhil Kalapala (@kaalpanikh)
+Nikhil Mishra (@kaalpanikh)
 
 ## 🙏 Acknowledgments
 
